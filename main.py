@@ -105,7 +105,18 @@ def add_quiz(quizzes):
     print("퀴즈가 추가되었습니다.")
 
 
+def list_quizzes(quizzes):
+    if not quizzes:
+        print("퀴즈가 없습니다. 먼저 퀴즈를 추가하세요.")
+        return
 
+    print(f"총 {len(quizzes)}개의 퀴즈가 있습니다.")
+    print("-" * 40)
+    
+    for number, quiz in enumerate(quizzes, start=1):
+        print(f"[{number}] {quiz.question}")
+        
+    print("-" * 40)
 
 def main():
     quizzes = create_default_quizzes()
@@ -119,7 +130,10 @@ def main():
 
         elif choice == 2:
             add_quiz(quizzes)
-            
+
+        elif choice == 3:
+            list_quizzes(quizzes)
+
         elif choice == 5:
             print("게임을 종료합니다.")
             break
