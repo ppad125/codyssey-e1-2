@@ -59,7 +59,7 @@ def read_number(prompt, min_value, max_value):
 def play_quiz(quizzes):
     if not quizzes:
         print("퀴즈가 없습니다. 먼저 퀴즈를 추가해주세요.")
-        return
+        return None
 
     print(f"퀴즈를 시작합니다! (총 {len(quizzes)}문제)")
     correct_count = 0
@@ -79,6 +79,7 @@ def play_quiz(quizzes):
     print("-" * 40)
     print(f"퀴즈가 끝났습니다! 총 {len(quizzes)}문제 중 {correct_count}문제를 맞히셨습니다. 점수: {score}점")
     print("-" * 40)
+    return score
 
 def read_text(prompt):
     while True:
@@ -118,21 +119,38 @@ def list_quizzes(quizzes):
         
     print("-" * 40)
 
+def show_score(best_score):
+    if best_score is None:
+        print("점수를 확인할 수 없습니다. 먼저 퀴즈를 풀어주세요.")
+        return
+
+    print(f"최고 점수: {best_score}점")
+
+
+
 def main():
     quizzes = create_default_quizzes()
+    best_score = None
 
     while True:
         show_menu()
         choice = read_number("선택 : ", 1, 5)
 
         if choice == 1:
-            play_quiz(quizzes)
-
+            score = play_quiz(quizzes)
+            if score is not None and (best_score is None or score > best_score):
+                best_score = score
+                print(f"최고 점수가 갱신되었습니다! 현재 최고 점수: {best_score}점")
+                
         elif choice == 2:
             add_quiz(quizzes)
 
         elif choice == 3:
             list_quizzes(quizzes)
+
+        elif choice == 4:
+            show_score(best_score)
+
 
         elif choice == 5:
             print("게임을 종료합니다.")
