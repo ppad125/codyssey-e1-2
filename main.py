@@ -56,15 +56,46 @@ def read_number(prompt, min_value, max_value):
         
         print(f"잘못된 입력입니다. {min_value}- {max_value} 사이의 숫자를 입력해주세요.")
 
+def play_quiz(quizzes):
+    if not quizzes:
+        print("퀴즈가 없습니다. 먼저 퀴즈를 추가해주세요.")
+        return
+
+    print(f"퀴즈를 시작합니다! (총 {len(quizzes)}문제)")
+    correct_count = 0
+
+    for number, quiz in enumerate(quizzes, start=1):
+        print("-" * 40)
+        quiz.display(number)
+        user_answer = read_number("정답을 선택하세요 (1-4): ", 1, 4)
+
+        if quiz.is_correct(user_answer):
+            print("정답입니다!")
+            correct_count += 1
+        else:
+            print(f"틀렸습니다. 정답은 {quiz.answer}번입니다.")
+
+    score  = correct_count * 100 // len(quizzes)
+    print("-" * 40)
+    print(f"퀴즈가 끝났습니다! 총 {len(quizzes)}문제 중 {correct_count}문제를 맞히셨습니다. 점수: {score}점")
+    print("-" * 40)
+
+
+
 def main():
+    quizzes = create_default_quizzes()
+
     while True:
         show_menu()
         choice = read_number("선택 : ", 1, 5)
 
-        if choice == 5:
+        if choice == 1:
+            play_quiz(quizzes)
+        elif choice == 5:
             print("게임을 종료합니다.")
             break
-        print(f"{choice}번 기능은 아직 준비 중입니다.")
+        else:
+            print(f"{choice}번 기능은 아직 준비 중입니다.")
 
 if __name__ == "__main__":
     try:
