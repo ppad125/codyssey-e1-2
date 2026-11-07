@@ -1,3 +1,22 @@
+class Quiz:
+    def __init__(self, question, choices, answer):
+        self.question = question
+        self.choices = choices
+        self.answer = answer
+
+    def display(self, number):
+        print(f"[문제 {number}]")
+        print(self.question)
+        print()
+        for index, choice in enumerate(self.choices, start=1):
+            print(f"{index}. {choice}")
+        print()
+
+    def is_correct(self, user_answer):
+        return self.answer == user_answer
+
+    
+
 def show_menu():
     print("=" * 40)
     print(" 치이카와 퀴즈 게임 ")
