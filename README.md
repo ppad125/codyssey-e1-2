@@ -79,3 +79,19 @@ codyssey-e1-2/
 - 파일이 **손상되면** 안내 후 기본 퀴즈로 복구합니다.
 ## 7. Git clone/pull 실습
 - `e1-2-clone` 폴더에 clone한 뒤 이 섹션을 추가해 commit/push하고, 원래 `e1-2` 폴더에서 pull로 반영을 확인했습니다.
+
+## 8. 실행 화면
+### 개발 환경 (Python, Git 설정)
+![개발 환경](docs/screenshots/env.png)
+
+### 퀴즈 추가 (첫 실행: 저장 파일이 없어 기본 퀴즈로 시작)
+![퀴즈 추가](docs/screenshots/add_quiz.png)
+
+### 퀴즈 풀기 (잘못된 입력 처리, 결과와 최고 점수 갱신)
+![퀴즈 풀기](docs/screenshots/play.png)
+
+### 재실행 시 데이터 유지와 메뉴 입력 예외 처리
+![메뉴](docs/screenshots/menu.png)
+
+### 점수 확인과 퀴즈 목록
+![점수 확인](docs/screenshots/score.png)
