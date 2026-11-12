@@ -9,3 +9,7 @@ venv/
 #macOS / 에디터 설정
 .DS_Store
 .vscode
+
+# 저장 파일 백업 (로컬 전용)
+state.json.bak
+state.corrupted.json

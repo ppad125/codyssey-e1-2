@@ -1,7 +1,10 @@
 import json
+import shutil
 from pathlib import Path
 
 STATE_FILE = Path(__file__).parent / "state.json"
+BACKUP_FILE = Path(__file__).parent / "state.json.bak"
+CORRUPTED_FILE = Path(__file__).parent / "state.corrupted.json"
 
 
 class Quiz:
@@ -90,8 +93,17 @@ class QuizGame:
             self.best_score = None
         except (ValueError, KeyError, TypeError):
             print("데이터 파일이 손상되어 기본 퀴즈로 복구합니다.")
+            self.keep_corrupted_file()
             self.quizzes = create_default_quizzes()
             self.best_score = None
+
+    def keep_corrupted_file(self):
+        try:
+            STATE_FILE.replace(CORRUPTED_FILE)
+            print(f"손상된 파일은 {CORRUPTED_FILE.name}로 보관했습니다.")
+            print(f"직전 정상 데이터는 {BACKUP_FILE.name}에 있습니다.")
+        except OSError:
+            print("손상된 파일을 보관하지 못했습니다.")
 
     def save_state(self):
         quiz_list = []
@@ -104,6 +116,9 @@ class QuizGame:
         }
 
         try:
+            if STATE_FILE.exists():
+                shutil.copyfile(STATE_FILE, BACKUP_FILE)
+
             with open(STATE_FILE, "w", encoding="utf-8") as file:
                 json.dump(data, file, ensure_ascii=False, indent=4)
         except OSError:
