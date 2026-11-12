@@ -95,3 +95,8 @@ codyssey-e1-2/
 
 ### 점수 확인과 퀴즈 목록
 ![점수 확인](docs/screenshots/score.png)
+
+### Git 커밋 그래프 (`git log --oneline --graph`)
+브랜치 `feature/play-quiz`를 만들어 작업한 뒤 `main`에 병합한 기록이 보입니다.
+
+![git log](docs/screenshots/git_log.png)
