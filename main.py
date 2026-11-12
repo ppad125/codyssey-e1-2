@@ -1,3 +1,9 @@
+import json
+from pathlib import Path
+
+STATE_FILE = Path(__file__).parent / "state.json"
+
+
 class Quiz:
     def __init__(self, question, choices, answer):
         self.question = question
@@ -14,6 +20,13 @@ class Quiz:
 
     def is_correct(self, user_answer):
         return self.answer == user_answer
+
+    def to_dict(self):
+        return {
+            "question": self.question,
+            "choices": self.choices,
+            "answer": self.answer,
+        }
 
 def create_default_quizzes():
     return [
@@ -55,8 +68,46 @@ def read_text(prompt):
 
 class QuizGame:
     def __init__(self):
-        self.quizzes = create_default_quizzes()
+        self.quizzes = []
         self.best_score = None
+        self.load_state()
+
+    def load_state(self):
+        try:
+            with open(STATE_FILE, "r", encoding="utf-8") as file:
+                data = json.load(file)
+
+            quizzes = []
+            for item in data["quizzes"]:
+                quizzes.append(Quiz(item["question"], item["choices"], item["answer"]))
+
+            self.quizzes = quizzes
+            self.best_score = data["best_score"]
+            print(f"저장된 데이터를 불러왔습니다. (퀴즈 {len(self.quizzes)}개)")
+        except FileNotFoundError:
+            print("저장된 데이터가 없어 기본 퀴즈로 시작합니다.")
+            self.quizzes = create_default_quizzes()
+            self.best_score = None
+        except (ValueError, KeyError, TypeError):
+            print("데이터 파일이 손상되어 기본 퀴즈로 복구합니다.")
+            self.quizzes = create_default_quizzes()
+            self.best_score = None
+
+    def save_state(self):
+        quiz_list = []
+        for quiz in self.quizzes:
+            quiz_list.append(quiz.to_dict())
+
+        data = {
+            "quizzes": quiz_list,
+            "best_score": self.best_score,
+        }
+
+        try:
+            with open(STATE_FILE, "w", encoding="utf-8") as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)
+        except OSError:
+            print("데이터를 저장하지 못했습니다.")
 
     def show_menu(self):
         print("=" * 40)
@@ -98,6 +149,7 @@ class QuizGame:
         if self.best_score is None or score > self.best_score:
             self.best_score = score
             print(f"최고 점수가 갱신되었습니다! 현재 최고 점수: {self.best_score}점")
+            self.save_state()
 
     def add_quiz(self):
         print("퀴즈를 추가합니다.")
@@ -112,6 +164,7 @@ class QuizGame:
 
         new_quiz = Quiz(question, choices, answer)
         self.quizzes.append(new_quiz)
+        self.save_state()
         print("퀴즈가 추가되었습니다.")
 
     def list_quizzes(self):
@@ -148,17 +201,21 @@ class QuizGame:
             elif choice == 4:
                 self.show_score()
             elif choice == 5:
+                self.save_state()
                 print("게임을 종료합니다.")
                 break
 
 def main():
     game = QuizGame()
-    game.run()
+
+    try:
+        game.run()
+    except (KeyboardInterrupt, EOFError):
+        print("\n입력이 중단되어 저장 후 게임을 종료합니다.")
+        game.save_state()
+
 
 if __name__ == "__main__":
-    try:
-        main()
-    except (KeyboardInterrupt, EOFError):
-        print("\n 입력이 중단되어 게임을 종료합니다.")
+    main()
 
     
